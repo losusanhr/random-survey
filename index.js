@@ -1,10 +1,7 @@
-const urls = window.SURVEY_URLS;
+// url.js
+// 把問卷放這裡
 
-if (!Array.isArray(urls) || urls.length < 2) {
-  document.body.innerText = "URLs not found. Please check url.js";
-  return;
-}
-  const chosenUrl = urls[nextTurn];
-  sessionStorage.setItem(ENTRY_KEY, chosenUrl);
-  window.location.replace(chosenUrl);
-})();
+window.SURVEY_URLS = [
+  "https://www.surveycake.com/s/AdBOR",
+  "https://www.surveycake.com/s/QOONA"
+];
