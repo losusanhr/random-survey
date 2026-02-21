@@ -7,7 +7,7 @@
  */
 
 
-const urls = [
+window.urls = [
 	'https://www.surveycake.com/s/AdBOR',
 	'https://www.surveycake.com/s/QOONA',
 ];
