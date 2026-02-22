@@ -5,7 +5,7 @@ function getParam(name) {
 }
 
 function genPID() {
-  return `P${Date.now().toString(36)}${Math.random().toString(36).slice(2, 8)}`;
+  return `P${Date.now().toString(36)}${Math.random().toString(36).slice(2, 8)}`.toUpperCase();
 }
 
 function buildUrl(baseUrl, paramsObj) {
@@ -17,30 +17,25 @@ function buildUrl(baseUrl, paramsObj) {
 }
 
 (function main() {
-  // 1) PID：優先取網址 pid，其次 localStorage，否則新產生
-  // （注意：我們對外仍用 pid 當測試參數，但送去 SurveyCake 會用 aka_pid）
-  let pid = getParam("pid") || localStorage.getItem("pid");
+  // 1) aka_pid：先取網址，其次 localStorage，否則新產生
+  let pid = getParam("aka_pid") || localStorage.getItem("aka_pid");
   if (!pid) pid = genPID();
-  localStorage.setItem("pid", pid);
+  localStorage.setItem("aka_pid", pid);
 
-  // 2) 取得問卷清單（來自 url.js）
-  const list = window.SURVEY_URLS;
+  // 2) 問卷1版本清單
+  const list = window.SURVEY1_URLS;
   if (!Array.isArray(list) || list.length === 0) {
-    document.body.innerText = "SURVEY_URLS 未設定或為空，請檢查 url.js";
+    document.body.innerText = "SURVEY1_URLS 未設定或為空，請檢查 url.js";
     return;
   }
 
-  // 3) 隨機選一個版本
+  // 3) 隨機挑版本
   const idx = Math.floor(Math.random() * list.length);
-  const chosen = list[idx]; // { ver: "A"/"B", url: "..." }
+  const chosenUrl = list[idx];
+  const ver = idx === 0 ? "A" : "B"; // 只是方便你之後分析，可留可不留
 
-  // 4) 組問卷1網址（帶 aka_pid + ver + stage=1）
-  const target = buildUrl(chosen.url, {
-    aka_pid: pid,      // ✅ 對應 SurveyCake 的 aka_pid 欄位
-    ver: chosen.ver,   // ✅ 記錄版本
-    stage: "1"         // ✅ 記錄是第1份問卷
-  });
+  // 4) 導向問卷1（帶 aka_pid）
+  const target = buildUrl(chosenUrl, { aka_pid: pid, ver, stage: 1 });
 
-  // 5) 轉跳
   location.replace(target);
 })();
