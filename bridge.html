@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Redirecting...</title>
+</head>
+
+<body>
+
+<p>正在進入下一份問卷…</p>
+
+<script>
+
+// 讀取網址參數
+const params = new URLSearchParams(location.search);
+
+// 優先抓網址pid，如果沒有就抓localStorage
+const pid = params.get("pid") || localStorage.getItem("pid") || "";
+
+// 版本資訊（可選）
+const ver = params.get("ver") || "";
+
+// 問卷2網址
+const SURVEY2 = "https://www.surveycake.com/s/RbZ8y";
+
+const u = new URL(SURVEY2);
+
+if (pid) u.searchParams.set("pid", pid);
+if (ver) u.searchParams.set("ver", ver);
+
+// 自動跳轉
+location.replace(u.toString());
+
+</script>
+
+</body>
+</html>
