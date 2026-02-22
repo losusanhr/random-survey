@@ -1,5 +1,14 @@
 // url.js
-window.SURVEY1_URLS = [
-  "https://www.surveycake.com/s/AdBOR", // 版本A
-  "https://www.surveycake.com/s/QOONA"  // 版本B
+
+window.SURVEY1 = [
+  {
+    key: "A",
+    name: "AdBOR",
+    url: "https://www.surveycake.com/s/QOONA"
+  },
+  {
+    key: "B",
+    name: "QOONA",
+    url: "https://www.surveycake.com/s/RbZ8y"
+  }
 ];
