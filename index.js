@@ -1,43 +1,19 @@
-function getParam(name) {
-  return new URLSearchParams(location.search).get(name);
-}
+(function () {
 
-function randInt(max) {
-  return Math.floor(Math.random() * max);
-}
+  const surveys = [
 
-function normalizeExclude(raw) {
+    "https://www.surveycake.com/s/QOONA",
+    "https://www.surveycake.com/s/AdBOR"
 
-  if (!raw) return null;
+  ];
 
-  const v = String(raw).trim().toUpperCase();
+  // ⭐ 只在第一次進入才分流
+  if (sessionStorage.getItem("enteredSurvey")) return;
 
-  if (v === "A" || v === "P1") return "A";
-  if (v === "B" || v === "P2") return "B";
+  sessionStorage.setItem("enteredSurvey", "1");
 
-  return null;
-}
+  const chosen = surveys[Math.floor(Math.random() * surveys.length)];
 
-(function main() {
-
-  const list = window.SURVEY1;
-
-  if (!Array.isArray(list)) {
-    document.body.innerText = "SURVEY1 未設定";
-    return;
-  }
-
-  const exclude = normalizeExclude(getParam("exclude"));
-
-  const pool = list.filter(x => x.key !== exclude);
-
-  if (pool.length === 0) {
-    document.body.innerText = "沒有可用版本";
-    return;
-  }
-
-  const chosen = pool[randInt(pool.length)];
-
-  location.replace(chosen.url);
+  location.replace(chosen);
 
 })();
