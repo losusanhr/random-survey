@@ -12,13 +12,18 @@
 
 <script>
 
-// 讀取網址參數
+// 取得網址參數
 const params = new URLSearchParams(location.search);
 
-// 優先抓網址pid，如果沒有就抓localStorage
-const pid = params.get("pid") || localStorage.getItem("pid") || "";
+// 先抓 aka_pid（SurveyCake用）
+let pid = params.get("aka_pid");
 
-// 版本資訊（可選）
+// 如果沒有，抓舊的 pid（備援）
+if (!pid) {
+  pid = params.get("pid") || localStorage.getItem("pid") || "";
+}
+
+// 抓版本
 const ver = params.get("ver") || "";
 
 // 問卷2網址
@@ -26,8 +31,13 @@ const SURVEY2 = "https://www.surveycake.com/s/RbZ8y";
 
 const u = new URL(SURVEY2);
 
-if (pid) u.searchParams.set("pid", pid);
+// ⭐ 重要：用 aka_pid 傳給問卷2
+if (pid) u.searchParams.set("aka_pid", pid);
+
 if (ver) u.searchParams.set("ver", ver);
+
+// stage 改成 2（研究級串接）
+u.searchParams.set("stage", "2");
 
 // 自動跳轉
 location.replace(u.toString());
