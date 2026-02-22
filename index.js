@@ -1,37 +1,46 @@
 // index.js
-// 隨機分派入口 + 額滿避開功能 (?exclude=QOONA 或 ?exclude=AdBOR)
 
-(function () {
+function getParam(name) {
+  return new URLSearchParams(location.search).get(name);
+}
 
-  const urls = window.SURVEY_URLS;
+function genPID() {
+  return `P${Date.now().toString(36)}${Math.random().toString(36).slice(2, 8)}`;
+}
 
-  if (!Array.isArray(urls) || urls.length < 2) {
-    document.body.innerText = "URLs not found. Please check url.js";
+function buildUrl(baseUrl, paramsObj) {
+  const u = new URL(baseUrl);
+  Object.entries(paramsObj).forEach(([k, v]) => {
+    if (v !== null && v !== undefined && v !== "") u.searchParams.set(k, v);
+  });
+  return u.toString();
+}
+
+(function main() {
+  // 1) PID：優先取網址，其次 localStorage，否則新產生
+  let pid = getParam("pid") || localStorage.getItem("pid");
+  if (!pid) {
+    pid = genPID();
+  }
+  localStorage.setItem("pid", pid);
+
+  // 2) 取得問卷清單（來自 url.js）
+  const list = window.SURVEY_URLS;
+  if (!Array.isArray(list) || list.length === 0) {
+    document.body.innerText = "SURVEY_URLS 未設定或為空，請檢查 url.js";
     return;
   }
 
-  // 對應你兩個版本（順序請和 url.js 一致）
-  // 0 = AdBOR（無不信任）
-  // 1 = QOONA（不信任）
-  const nameToIndex = {
-    "AdBOR": 0,
-    "QOONA": 1
-  };
+  // 3) 隨機選一個版本
+  const idx = Math.floor(Math.random() * list.length);
+  const chosen = list[idx]; // {ver,url}
 
-  // 讀取網址參數 exclude
-  const params = new URLSearchParams(window.location.search);
-  const exclude = params.get("exclude"); // "QOONA" 或 "AdBOR" 或 null
+  // 4) 組問卷1網址（帶 pid + ver）
+  const target = buildUrl(chosen.url, {
+    pid,
+    ver: chosen.ver
+  });
 
-  // 如果有 exclude，就直接選另一個
-  if (exclude && (exclude in nameToIndex)) {
-    const exIdx = nameToIndex[exclude];
-    const pickIdx = exIdx === 0 ? 1 : 0;
-    window.location.replace(urls[pickIdx]);
-    return;
-  }
-
-  // 否則就正常隨機
-  const randomIndex = Math.floor(Math.random() * urls.length);
-  window.location.replace(urls[randomIndex]);
-
+  // 5) 轉跳
+  location.replace(target);
 })();
