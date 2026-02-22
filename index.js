@@ -17,11 +17,10 @@ function buildUrl(baseUrl, paramsObj) {
 }
 
 (function main() {
-  // 1) PID：優先取網址，其次 localStorage，否則新產生
+  // 1) PID：優先取網址 pid，其次 localStorage，否則新產生
+  // （注意：我們對外仍用 pid 當測試參數，但送去 SurveyCake 會用 aka_pid）
   let pid = getParam("pid") || localStorage.getItem("pid");
-  if (!pid) {
-    pid = genPID();
-  }
+  if (!pid) pid = genPID();
   localStorage.setItem("pid", pid);
 
   // 2) 取得問卷清單（來自 url.js）
@@ -33,12 +32,13 @@ function buildUrl(baseUrl, paramsObj) {
 
   // 3) 隨機選一個版本
   const idx = Math.floor(Math.random() * list.length);
-  const chosen = list[idx]; // {ver,url}
+  const chosen = list[idx]; // { ver: "A"/"B", url: "..." }
 
-  // 4) 組問卷1網址（帶 pid + ver）
+  // 4) 組問卷1網址（帶 aka_pid + ver + stage=1）
   const target = buildUrl(chosen.url, {
-    pid,
-    ver: chosen.ver
+    aka_pid: pid,      // ✅ 對應 SurveyCake 的 aka_pid 欄位
+    ver: chosen.ver,   // ✅ 記錄版本
+    stage: "1"         // ✅ 記錄是第1份問卷
   });
 
   // 5) 轉跳
