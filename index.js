@@ -1,5 +1,3 @@
-// index.js
-
 function getParam(name) {
   return new URLSearchParams(location.search).get(name);
 }
@@ -9,12 +7,13 @@ function randInt(max) {
 }
 
 function normalizeExclude(raw) {
+
   if (!raw) return null;
 
   const v = String(raw).trim().toUpperCase();
 
-  if (v === "A" || v === "ADBOR") return "A";
-  if (v === "B" || v === "QOONA") return "B";
+  if (v === "A" || v === "P1") return "A";
+  if (v === "B" || v === "P2") return "B";
 
   return null;
 }
@@ -23,7 +22,7 @@ function normalizeExclude(raw) {
 
   const list = window.SURVEY1;
 
-  if (!Array.isArray(list) || list.length === 0) {
+  if (!Array.isArray(list)) {
     document.body.innerText = "SURVEY1 未設定";
     return;
   }
@@ -33,15 +32,12 @@ function normalizeExclude(raw) {
   const pool = list.filter(x => x.key !== exclude);
 
   if (pool.length === 0) {
-    document.body.innerText = "沒有可用版本（exclude 設定錯誤）";
+    document.body.innerText = "沒有可用版本";
     return;
   }
 
   const chosen = pool[randInt(pool.length)];
 
-  const url = new URL(chosen.url);
-  url.searchParams.set("ver", chosen.key);
-
-  location.replace(url.toString());
+  location.replace(chosen.url);
 
 })();
