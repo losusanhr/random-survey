@@ -29,8 +29,8 @@
     const selected = surveys[Math.floor(Math.random() * surveys.length)];
 
     const targetUrl = new URL(selected.url);
-    targetUrl.searchParams.set("ver", selected.ver);
-    targetUrl.searchParams.set("pid", pid);
+    targetUrl.searchParams.set("aka_ver", selected.ver);
+    targetUrl.searchParams.set("aka_pid", pid);
 
     window.location.replace(targetUrl.toString());
   </script>
