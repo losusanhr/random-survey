@@ -5,7 +5,7 @@
   <title>問卷分派中...</title>
 </head>
 <body>
-  <p>系統分派問卷中，請稍候...</p>
+  <p id="msg">系統分派問卷中，請稍候...</p>
 
   <script>
     const surveys = [
@@ -26,13 +26,39 @@
     const params = new URLSearchParams(window.location.search);
     const pid = params.get("pid") || "";
 
-    const selected = surveys[Math.floor(Math.random() * surveys.length)];
+    const storageKey = "random_survey_assignment";
 
-    const targetUrl = new URL(selected.url);
-    targetUrl.searchParams.set("aka_ver", selected.ver);
-    targetUrl.searchParams.set("aka_pid", pid);
+    function buildUrl(url, ver, pidValue) {
+      const targetUrl = new URL(url);
+      targetUrl.searchParams.set("aka_ver", ver);
+      targetUrl.searchParams.set("aka_pid", pidValue);
+      return targetUrl.toString();
+    }
 
-    window.location.replace(targetUrl.toString());
+    let saved = null;
+    try {
+      saved = JSON.parse(localStorage.getItem(storageKey));
+    } catch (e) {
+      saved = null;
+    }
+
+    if (saved && saved.url && saved.ver) {
+      const finalUrl = buildUrl(saved.url, saved.ver, saved.pid || pid);
+      window.location.replace(finalUrl);
+    } else {
+      const selected = surveys[Math.floor(Math.random() * surveys.length)];
+
+      const assignment = {
+        ver: selected.ver,
+        url: selected.url,
+        pid: pid
+      };
+
+      localStorage.setItem(storageKey, JSON.stringify(assignment));
+
+      const finalUrl = buildUrl(selected.url, selected.ver, pid);
+      window.location.replace(finalUrl);
+    }
   </script>
 </body>
 </html>
