@@ -1,45 +1,38 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="robots" content="noindex,nofollow" />
-  <title>Survey Redirect</title>
-  <style>
-    body { font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif; margin: 0; padding: 24px; }
-    .card { max-width: 720px; margin: 12vh auto; border: 1px solid #e5e5e5; border-radius: 12px; padding: 18px 18px; }
-    .title { font-weight: 700; margin: 0 0 8px; }
-    .muted { color: #666; margin: 0; }
-  </style>
+  <meta charset="UTF-8">
+  <title>問卷分派中...</title>
 </head>
 <body>
-  <div class="card">
-    <p class="title">正在進入問卷…</p>
-    <p class="muted">若未自動跳轉，請重新整理一次。</p>
-  </div>
+  <p>系統分派問卷中，請稍候...</p>
 
   <script>
-    (function () {
-      // 兩個版本（你指定的 SurveyCake 問卷網址）
-      var SURVEYS = [
-        "https://www.surveycake.com/s/QOONA", // P1 不信任
-        "https://www.surveycake.com/s/AdBOR"  // P2 沒有不信任
-      ];
+    const surveys = [
+      { ver: "O1", url: "https://www.surveycake.com/s/N76ro" },
+      { ver: "O2", url: "https://www.surveycake.com/s/XmzDP" },
+      { ver: "O3", url: "https://www.surveycake.com/s/Qy96v" },
+      { ver: "O4", url: "https://www.surveycake.com/s/xkLb8" },
+      { ver: "O5", url: "https://www.surveycake.com/s/8ZKBP" },
+      { ver: "O6", url: "https://www.surveycake.com/s/LOMgK" },
+      { ver: "O7", url: "https://www.surveycake.com/s/3XNVN" },
+      { ver: "O8", url: "https://www.surveycake.com/s/AvKZD" },
+      { ver: "O9", url: "https://www.surveycake.com/s/ZzBYm" },
+      { ver: "O10", url: "https://www.surveycake.com/s/N4Mdx" },
+      { ver: "O11", url: "https://www.surveycake.com/s/3XNzM" },
+      { ver: "O12", url: "https://www.surveycake.com/s/k8dz3" }
+    ];
 
-      // 入口網址若帶 aka_pid，就傳給 SurveyCake
-      var params = new URLSearchParams(window.location.search);
-      var akaPid = params.get("aka_pid"); // 只處理這個參數（你要的）
+    const params = new URLSearchParams(window.location.search);
+    const pid = params.get("pid") || "";
 
-      // 隨機抽一個
-      var chosen = SURVEYS[Math.floor(Math.random() * SURVEYS.length)];
+    const selected = surveys[Math.floor(Math.random() * surveys.length)];
 
-      // 組合目的地 URL（把 aka_pid 帶過去）
-      var dest = new URL(chosen);
-      if (akaPid) dest.searchParams.set("aka_pid", akaPid);
+    const targetUrl = new URL(selected.url);
+    targetUrl.searchParams.set("ver", selected.ver);
+    targetUrl.searchParams.set("pid", pid);
 
-      // 直接跳轉（replace 不會把入口留在返回歷史裡）
-      window.location.replace(dest.toString());
-    })();
+    window.location.replace(targetUrl.toString());
   </script>
 </body>
 </html>
